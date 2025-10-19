@@ -93,7 +93,9 @@ function fromMarkdown(opts: Options = {}): FromMarkdownExtension {
         href: finalPath + headingId,
         className: classNames,
       };
-      wikiLink.data.hChildren = [{ type: "text", value: text }];
+      // Use only the file name instead of the full path
+      const fileName = text.split("/").pop() ?? text;
+      wikiLink.data.hChildren = [{ type: "text", value: fileName }];
     } else {
       const [, name = "", extension = ""] =
         value.match(/^(.+?)(?:\.([^.]+))?$/) ?? [];
@@ -104,8 +106,7 @@ function fromMarkdown(opts: Options = {}): FromMarkdownExtension {
           className: classNames + " transclusion",
           src: finalPath,
         };
-        const fileName = name.split('/').pop() ?? name;
-        wikiLink.data.hChildren = [{ type: "text", value: fileName }];
+        wikiLink.data.hChildren = [{ type: "text", value: name }];
       } else if (isImageFile(extension)) {
         const [match, width, height] = alias?.match(/^(\d+)(?:x(\d+))?$/) ?? [];
         if (match) {
